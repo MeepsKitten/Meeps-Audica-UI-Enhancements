@@ -1,4 +1,4 @@
-# Meep's Audica UI Enhancements
+# Meeps' Audica UI Enhancements
  UI tweaks that make Me[eps] happy
 
 ## Album Art (requires Song Data Loader)
