@@ -23,7 +23,10 @@ namespace AudicaModding.MeepsUIEnhancements
                 }
                 else
                 {
-                    AlbumArt.AlbumArt.HideArt();
+                    if (MeepsUIEnhancements.songDataLoaderInstalled)
+                    {
+                        AlbumArt.AlbumArt.HideArt();
+                    }
                 }
             }
         }
