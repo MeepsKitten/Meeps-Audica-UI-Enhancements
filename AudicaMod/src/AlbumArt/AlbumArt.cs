@@ -179,8 +179,8 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
                         ValidateDefaults(__instance);
 
                         //set new
-                        __instance.launchButton.transform.localPosition = new Vector3(1.6f, 0, 0);
-                        __instance.launchButtonLabel.transform.localPosition = new Vector3(1.6f, 0, -0.01f);
+                        __instance.launchButton.transform.parent.localPosition = new Vector3(4.8f, 1.5f, 0);
+                        //__instance.launchButtonLabel.transform.localPosition = new Vector3(1.6f, 0, -0.01f);
                         __instance.chooseDifficultyLabel.transform.localPosition = new Vector3(4.5f, -1.3f, 0);
                         __instance.expert.transform.localPosition = new Vector3(4.5f, -3.7f, 0);
                         __instance.hard.transform.localPosition = new Vector3(4.5f, -3.7f, 0);
@@ -195,8 +195,8 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
                     return;
 
                 //if no customs we want them to be in default position
-                __instance.launchButton.transform.localPosition = defaultButtonPos.playbutt;
-                __instance.launchButtonLabel.transform.localPosition = defaultButtonPos.playbuttlabel;
+                __instance.launchButton.transform.parent.position = defaultButtonPos.playbutt;
+                //__instance.launchButtonLabel.transform.localPosition = defaultButtonPos.playbuttlabel;
                 __instance.chooseDifficultyLabel.transform.localPosition = defaultButtonPos.chooseDifficultyLabel;
                 __instance.expert.transform.localPosition = defaultButtonPos.difficultybutts;
                 __instance.hard.transform.localPosition = defaultButtonPos.difficultybutts;
@@ -209,8 +209,8 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
                 if (defaultsSet)
                     return;
                 //save default pos
-                defaultButtonPos.playbutt = __instance.launchButton.transform.localPosition;
-                defaultButtonPos.playbuttlabel = __instance.launchButtonLabel.transform.localPosition;
+                defaultButtonPos.playbutt = __instance.launchButton.transform.parent.position;
+                //defaultButtonPos.playbuttlabel = __instance.launchButtonLabel.transform.localPosition;
                 defaultButtonPos.chooseDifficultyLabel = __instance.chooseDifficultyLabel.transform.localPosition;
                 defaultButtonPos.difficultybutts = __instance.easy.transform.localPosition;
 
