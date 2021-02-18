@@ -3,7 +3,8 @@ using MelonLoader;
 using UnityEngine;
 using Harmony;
 using AudicaModding.MeepsUIEnhancements.AlbumArt;
-
+using System.IO;
+using UnityEngine.Events;
 
 namespace AudicaModding.MeepsUIEnhancements
 {
@@ -16,19 +17,21 @@ namespace AudicaModding.MeepsUIEnhancements
             {
                 if (state == MenuState.State.LaunchPage)
                 {
-                    if (MeepsUIEnhancements.songDataLoaderInstalled)
-                    {
-                        AlbumArt.AlbumArt.DisplayArt();
-                    }
+
+                    AlbumArt.AlbumArt.DisplayArt();
+
+                    QuickDifficultySelect.QuickDifficultySelect.InitUI();
+
                 }
                 else
                 {
-                    if (MeepsUIEnhancements.songDataLoaderInstalled)
-                    {
-                        AlbumArt.AlbumArt.HideArt();
-                    }
+                    AlbumArt.AlbumArt.HideArt();
+
                 }
+
+
             }
+
         }
 
     }

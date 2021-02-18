@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Collections;
 using Harmony;
 using System;
+using AudicaModding.MeepsUIEnhancements.Util;
 
 namespace AudicaModding.MeepsUIEnhancements.AlbumArt
 {
@@ -15,18 +16,19 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
         public static GameObject artObj;
         public static GameObject canvas;
         public static GameObject image;
+        public static GunButton previewButton;
 
 
         private static void EnableDisplayObject()
         {
-            if(!artObj)
+            if (!artObj)
             {
                 PrepareImagePrefab();
                 MelonLogger.Log("Creating UI");
             }
             else
             {
-                image.transform.localScale = new Vector3(0, 0, 0);
+                image.transform.parent.localScale = new Vector3(0, 0, 0);
                 artObj.SetActive(true);
             }
 
@@ -38,10 +40,10 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             yield return new WaitForSeconds(0.6f);
 
             float timer = 0;
-            while (1 > image.transform.localScale.x)
+            while (1 > image.transform.parent.localScale.x)
             {
                 timer += Time.deltaTime;
-                image.transform.localScale += new Vector3(1, 1, 1) * Time.deltaTime * 2f;
+                image.transform.parent.localScale += new Vector3(1, 1, 1) * Time.deltaTime * 2f;
                 yield return null;
             }
 
@@ -50,10 +52,10 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
         private static IEnumerator ExitAnim()
         {
             float timer = 0;
-            while (0 < image.transform.localScale.x)
+            while (0 < image.transform.parent.localScale.x)
             {
                 timer += Time.deltaTime;
-                image.transform.localScale -= new Vector3(1, 1, 1) * Time.deltaTime * 3f;
+                image.transform.parent.localScale -= new Vector3(1, 1, 1) * Time.deltaTime * 3f;
                 yield return null;
             }
 
@@ -62,24 +64,33 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
 
         public static void DisplayArt()
         {
-            Sprite currentAlbumArt = LoadCurrentSongSprite();
-            if(currentAlbumArt == null)
+            if (MeepsUIEnhancements.songDataLoaderInstalled)
             {
-                MelonLogger.LogError("Album art sprite is null");
+                var currentAlbumArt = LoadCurrentSongSprite();
+                if (currentAlbumArt == null)
+                {
+                    EnableDisplayObject();
+                    image.GetComponent<Image>().sprite = MeepsUIEnhancements.defaultAlbumArt;
+                }
+                else
+                {
+                    EnableDisplayObject();
+
+                    image.GetComponent<Image>().sprite = currentAlbumArt;
+
+                }
             }
             else
             {
                 EnableDisplayObject();
-
-                image.GetComponent<Image>().sprite = currentAlbumArt;
-
+                image.GetComponent<Image>().sprite = MeepsUIEnhancements.defaultAlbumArt;
             }
 
         }
 
         public static void HideArt()
         {
-            if(artObj)
+            if (artObj)
             {
                 MelonCoroutines.Start(ExitAnim());
             }
@@ -90,7 +101,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             SongList.SongData song = SongDataHolder.I.songData;
 
             bool hasCustom = SongDataLoader.AllSongData[song.songID].HasCustomData();
-            byte[] albumArtData = SongDataLoader.AllSongData[song.songID].albumArtData ;
+            byte[] albumArtData = SongDataLoader.AllSongData[song.songID].albumArtData;
 
             if (hasCustom && (albumArtData != null))
             {
@@ -102,7 +113,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
 
                 Sprite image = Util.LoadSprite.LoadSpriteFromDataArray(albumArtData);
                 MelonLogger.Log("loaded sprite");
-                return image;                           
+                return image;
             }
             else
             {
@@ -113,110 +124,68 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
         }
         public static void PrepareImagePrefab()
         {
-                //If I can figure out how to embedd the prefab ill use this
-                /*var prefab = new MemoryStream(Properties.Resources.albumart);
-                var prefabBundle = Il2CppAssetBundleManager.LoadFromStream(prefab);
-                if (prefabBundle == null) MelonLogger.Log("Failed to load album art display asset, make sure you have installed the mod properly.");
-                artObj = GameObject.Instantiate<GameObject>(prefabBundle.LoadAsset("Assets/AlbumArt.prefab").Cast<GameObject>());
-                artObj.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-                GameObject.DontDestroyOnLoad(artObj);
-                artObj.SetActive(true);
-                MelonLogger.Log("PrefabLoaded");*/
+            //create objects
+            artObj = new GameObject("Cover Art Obj");
+            canvas = new GameObject("Cover Art Canvas");
 
-                //create objects
-                artObj = new GameObject("Cover Art Obj");
-                canvas = new GameObject("Cover Art Canvas");
-                image = new GameObject("Cover Art Image");
+          
+            var imageholder = Util.LoadAssets.ObjectFromAssetBundle("UI Ehancements.src.AlbumArt.albumart", "Assets/CoverArt.prefab");
+            var cpnt = imageholder.AddComponent<AlbumArtShoot>();
+            ButtonUtilities.ObjectToButton(imageholder, new Action(() => { cpnt.ButtonShot(); }), new ButtonUtilities.ButtonSettings());
 
-                //make sure they stay
-                artObj.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-                canvas.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-                image.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-                GameObject.DontDestroyOnLoad(artObj);
+            image = imageholder.transform.GetChild(0).gameObject;
 
-                //set up hierarchy
-                canvas.transform.SetParent(artObj.transform);
-                image.transform.SetParent(canvas.transform);
+            //make sure they stay
+            artObj.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            canvas.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            GameObject.DontDestroyOnLoad(artObj);
 
-                //add components
-                canvas.AddComponent<Canvas>();
-                image.AddComponent<CanvasRenderer>();
-                image.AddComponent<Image>();
+            //set up hierarchy
+            canvas.transform.SetParent(artObj.transform);
+            imageholder.transform.SetParent(canvas.transform);
 
-                //position canvas
-                RectTransform canvasTransform = canvas.GetComponent<RectTransform>();
-                canvasTransform.localScale = new Vector3(0.08f, 0.08f, 0.08f);
-                canvasTransform.position += new Vector3(-5.2f, 2.3f, 24);
+            //add components
+            canvas.AddComponent<Canvas>();
 
-                 //set scales
-                 image.transform.localScale = new Vector3(0, 0, 0);
-            }
+            //position canvas
+            RectTransform canvasTransform = canvas.GetComponent<RectTransform>();
+            canvasTransform.localScale = new Vector3(0.08f, 0.08f, 0.08f);
+            canvasTransform.position += new Vector3(-5.2f, 2.15f, 24);
 
-        private struct PreviousButtonPos
-        {
-            public Vector3 playbutt;
-            public Vector3 playbuttlabel;
-            public Vector3 chooseDifficultyLabel;
-            public Vector3 difficultybutts;
+            //set scales
+            imageholder.transform.localScale = new Vector3(0, 0, 0);
         }
 
-        private static PreviousButtonPos defaultButtonPos;
-        private static bool defaultsSet = false;
 
         [HarmonyPatch(typeof(LaunchPanel), "OnEnable", new Type[0])]
         private static class LoadAlbumArt
         {
             private static void Postfix(LaunchPanel __instance)
             {
-                SongList.SongData song = SongDataHolder.I.songData;
 
-                bool hasCustom = SongDataLoader.AllSongData[song.songID].HasCustomData();
-                if (hasCustom)
-                {
-                    byte[] art = SongDataLoader.AllSongData[song.songID].albumArtData;
-                    if (art != null && art.Length > 0)
-                    {
-                        ValidateDefaults(__instance);
+                __instance.launchButton.transform.parent.localPosition = new Vector3(4.8f, 1.5f, 0);
+                //__instance.launchButtonLabel.transform.localPosition = new Vector3(1.6f, 0, -0.01f);
+                __instance.chooseDifficultyLabel.transform.localPosition = new Vector3(4.65f, -0.7f, 0);
 
-                        //set new
-                        __instance.launchButton.transform.parent.localPosition = new Vector3(4.8f, 1.5f, 0);
-                        //__instance.launchButtonLabel.transform.localPosition = new Vector3(1.6f, 0, -0.01f);
-                        __instance.chooseDifficultyLabel.transform.localPosition = new Vector3(4.5f, -1.3f, 0);
-                        __instance.expert.transform.localPosition = new Vector3(4.5f, -3.7f, 0);
-                        __instance.hard.transform.localPosition = new Vector3(4.5f, -3.7f, 0);
-                        __instance.normal.transform.localPosition = new Vector3(4.5f, -3.7f, 0);
-                        __instance.easy.transform.localPosition = new Vector3(4.5f, -3.7f, 0);
+                //tf buttons
+                Vector3 translation = new Vector3(4.65f, -2.2f, 0);
+                __instance.expert.transform.localPosition = translation;
+                __instance.hard.transform.localPosition = translation;
+                __instance.normal.transform.localPosition = translation;
+                __instance.easy.transform.localPosition = translation;
 
-                        return;
-                    }
-                }
+                //scale buttons
+                Vector3 scalevec = new Vector3(2.1f, 2.1f, 2.1f);
+                __instance.expert.transform.localScale = scalevec;
+                __instance.hard.transform.localScale = scalevec;
+                __instance.normal.transform.localScale = scalevec;
+                __instance.easy.transform.localScale = scalevec;
 
-                if (!defaultsSet)
-                    return;
-
-                //if no customs we want them to be in default position
-                __instance.launchButton.transform.parent.position = defaultButtonPos.playbutt;
-                //__instance.launchButtonLabel.transform.localPosition = defaultButtonPos.playbuttlabel;
-                __instance.chooseDifficultyLabel.transform.localPosition = defaultButtonPos.chooseDifficultyLabel;
-                __instance.expert.transform.localPosition = defaultButtonPos.difficultybutts;
-                __instance.hard.transform.localPosition = defaultButtonPos.difficultybutts;
-                __instance.normal.transform.localPosition = defaultButtonPos.difficultybutts;
-                __instance.easy.transform.localPosition = defaultButtonPos.difficultybutts;
-            }
-
-            private static void ValidateDefaults(LaunchPanel __instance)
-            {
-                if (defaultsSet)
-                    return;
-                //save default pos
-                defaultButtonPos.playbutt = __instance.launchButton.transform.parent.position;
-                //defaultButtonPos.playbuttlabel = __instance.launchButtonLabel.transform.localPosition;
-                defaultButtonPos.chooseDifficultyLabel = __instance.chooseDifficultyLabel.transform.localPosition;
-                defaultButtonPos.difficultybutts = __instance.easy.transform.localPosition;
-
-                defaultsSet = true;
+                //save preview state
+                previewButton =  __instance.songPreviewButton.GetComponentInChildren<GunButton>();
             }
         }
+
 
     }
 }

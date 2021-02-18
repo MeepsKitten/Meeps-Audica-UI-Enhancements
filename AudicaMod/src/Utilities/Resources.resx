@@ -119,6 +119,21 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="albumart" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\src\albumart\albumart;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\AlbumArt\albumart;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="albumart1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\AlbumArt\albumart.manifest;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="defaultart" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\AlbumArt\defaultart;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="defaultart1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\AlbumArt\defaultart.manifest;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="quickdiffbuttons" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\QuickDifficultySelect\quickdiffbuttons;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="quickdiffbuttons1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\QuickDifficultySelect\quickdiffbuttons.manifest;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
