@@ -6,6 +6,7 @@ using System.Linq;
 using System.IO;
 using UnhollowerRuntimeLib;
 using AudicaModding.MeepsUIEnhancements.QuickDifficultySelect;
+using AudicaModding.MeepsUIEnhancements;
 
 [assembly: MelonOptionalDependencies("SongDataLoader")]
 
@@ -32,8 +33,15 @@ namespace AudicaModding.MeepsUIEnhancements
             "Album Art Display"
         };
 
+        public override void OnModSettingsApplied()
+        {
+            Config.Config.OnModSettingsApplied();
+        }
+
         public override void OnApplicationStart()
         {
+           Config.Config.RegisterConfig();
+
             if (MelonHandler.Mods.Any(it => (it.Info.SystemType.Name == nameof(SongDataLoader) && (Util.VersionCompare.versionCompare(it.Info.Version, minSongDataLoaderVersion) > 0))))
             {
                 songDataLoaderInstalled = true;
@@ -56,7 +64,6 @@ namespace AudicaModding.MeepsUIEnhancements
             defaultAlbumArt = Sprite.Create(Util.LoadAssets.Texture2DFromAssetBundle("UI Ehancements.src.AlbumArt.defaultart", "song.png"), new Rect(0, 0, 256, 256), Vector2.zero);
             defaultAlbumArt.hideFlags |= HideFlags.DontUnloadUnusedAsset;
             GameObject.DontDestroyOnLoad(defaultAlbumArt);
-
         }
 
     }

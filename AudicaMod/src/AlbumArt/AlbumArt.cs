@@ -18,13 +18,18 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
         public static GameObject image;
         public static GunButton previewButton;
 
+        private static bool DefaultsSet = false;
+        private static bool UsingCustomArt = false;
+        private static Vector3 default_LaunchButtonPos;
+        private static Vector3 default_DifficultyLabelPos;
+        private static Vector3 default_DifficultyButtonPos;
+        private static Vector3 default_DifficultyButtonScale;
 
         private static void EnableDisplayObject()
         {
             if (!artObj)
             {
                 PrepareImagePrefab();
-                MelonLogger.Log("Creating UI");
             }
             else
             {
@@ -43,7 +48,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             while (1 > image.transform.parent.localScale.x)
             {
                 timer += Time.deltaTime;
-                image.transform.parent.localScale += new Vector3(1, 1, 1) * Time.deltaTime * 2f;
+                image.transform.parent.localScale += new Vector3(1, 1, 1) * Time.deltaTime * 2.5f;
                 yield return null;
             }
 
@@ -64,19 +69,25 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
 
         public static void DisplayArt()
         {
+            if (!MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.CoverArt)))
+                return;
+
             if (MeepsUIEnhancements.songDataLoaderInstalled)
             {
                 var currentAlbumArt = LoadCurrentSongSprite();
                 if (currentAlbumArt == null)
                 {
-                    EnableDisplayObject();
+                    EnableDisplayObject();             
                     image.GetComponent<Image>().sprite = MeepsUIEnhancements.defaultAlbumArt;
+                    UsingCustomArt = false;
                 }
                 else
                 {
                     EnableDisplayObject();
 
                     image.GetComponent<Image>().sprite = currentAlbumArt;
+                    UsingCustomArt = true;
+
 
                 }
             }
@@ -84,12 +95,22 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             {
                 EnableDisplayObject();
                 image.GetComponent<Image>().sprite = MeepsUIEnhancements.defaultAlbumArt;
+                UsingCustomArt = false;
+
             }
 
+            //control cover art brightness
+            float h, s, v;
+            Color.RGBToHSV(image.GetComponent<Image>().color, out h, out s, out v);
+            v = MelonPrefs.GetFloat(Config.Config.CATegory, nameof(Config.Config.CoverArtBirghtness));
+            image.GetComponent<Image>().color = Color.HSVToRGB(h, s, v / 100);
         }
 
         public static void HideArt()
         {
+            if (!MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.CoverArt)))
+                return;
+
             if (artObj)
             {
                 MelonCoroutines.Start(ExitAnim());
@@ -112,12 +133,11 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
                 }
 
                 Sprite image = Util.LoadSprite.LoadSpriteFromDataArray(albumArtData);
-                MelonLogger.Log("loaded sprite");
                 return image;
             }
             else
             {
-                MelonLogger.LogWarning("cover art data is null");
+                //MelonLogger.LogWarning("cover art data is null");
             }
 
             return null;
@@ -128,7 +148,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             artObj = new GameObject("Cover Art Obj");
             canvas = new GameObject("Cover Art Canvas");
 
-          
+
             var imageholder = Util.LoadAssets.ObjectFromAssetBundle("UI Ehancements.src.AlbumArt.albumart", "Assets/CoverArt.prefab");
             var cpnt = imageholder.AddComponent<AlbumArtShoot>();
             ButtonUtilities.ObjectToButton(imageholder, new Action(() => { cpnt.ButtonShot(); }), new ButtonUtilities.ButtonSettings());
@@ -163,29 +183,100 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             private static void Postfix(LaunchPanel __instance)
             {
 
-                __instance.launchButton.transform.parent.localPosition = new Vector3(4.8f, 1.5f, 0);
-                //__instance.launchButtonLabel.transform.localPosition = new Vector3(1.6f, 0, -0.01f);
-                __instance.chooseDifficultyLabel.transform.localPosition = new Vector3(4.65f, -0.7f, 0);
+                var coverArtOn = MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.CoverArt));
+                var diffDispOn = MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.QuickDifficultyDisplay));
 
-                //tf buttons
-                Vector3 translation = new Vector3(4.65f, -2.2f, 0);
-                __instance.expert.transform.localPosition = translation;
-                __instance.hard.transform.localPosition = translation;
-                __instance.normal.transform.localPosition = translation;
-                __instance.easy.transform.localPosition = translation;
+                if(!DefaultsSet)
+                {
+                    default_LaunchButtonPos = __instance.launchButton.transform.parent.localPosition;
+                    default_DifficultyLabelPos = __instance.chooseDifficultyLabel.transform.localPosition;
+                    default_DifficultyButtonPos = __instance.expert.transform.localPosition;
+                    default_DifficultyButtonScale = __instance.expert.transform.localScale;
+                    DefaultsSet = true;
+                }
 
-                //scale buttons
-                Vector3 scalevec = new Vector3(2.1f, 2.1f, 2.1f);
-                __instance.expert.transform.localScale = scalevec;
-                __instance.hard.transform.localScale = scalevec;
-                __instance.normal.transform.localScale = scalevec;
-                __instance.easy.transform.localScale = scalevec;
+             
+                if (diffDispOn)
+                {
+                    __instance.launchButton.transform.parent.localPosition = new Vector3(__instance.launchButton.transform.parent.localPosition.x, 1.5f, __instance.launchButton.transform.parent.localPosition.z);
+                    __instance.chooseDifficultyLabel.transform.localPosition = new Vector3(__instance.chooseDifficultyLabel.transform.localPosition.x, -0.7f, __instance.chooseDifficultyLabel.transform.localPosition.z);
 
-                //save preview state
-                previewButton =  __instance.songPreviewButton.GetComponentInChildren<GunButton>();
+                    //tf buttons
+                    Vector3 translation = new Vector3(__instance.expert.transform.localPosition.x, -2.2f, __instance.expert.transform.localPosition.z);
+                    __instance.expert.transform.localPosition = translation;
+                    __instance.hard.transform.localPosition = translation;
+                    __instance.normal.transform.localPosition = translation;
+                    __instance.easy.transform.localPosition = translation;
+
+                    //scale buttons
+                    Vector3 scalevec = new Vector3(2.1f, 2.1f, 2.1f);
+                    __instance.expert.transform.localScale = scalevec;
+                    __instance.hard.transform.localScale = scalevec;
+                    __instance.normal.transform.localScale = scalevec;
+                    __instance.easy.transform.localScale = scalevec;
+                }
+                else if(DefaultsSet)
+                {
+                    __instance.launchButton.transform.parent.localPosition = new Vector3(__instance.launchButton.transform.parent.localPosition.x,default_LaunchButtonPos.y, __instance.launchButton.transform.parent.localPosition.z);
+                    __instance.chooseDifficultyLabel.transform.localPosition = new Vector3(__instance.chooseDifficultyLabel.transform.localPosition.x, default_DifficultyLabelPos.y, __instance.chooseDifficultyLabel.transform.localPosition.z);
+
+                    //tf buttons
+                    Vector3 translation = new Vector3(__instance.expert.transform.localPosition.x,default_DifficultyButtonPos.y, __instance.expert.transform.localPosition.z);
+                    __instance.expert.transform.localPosition = translation;
+                    __instance.hard.transform.localPosition = translation;
+                    __instance.normal.transform.localPosition = translation;
+                    __instance.easy.transform.localPosition = translation;
+
+                    //scale buttons
+                    Vector3 scalevec = default_DifficultyButtonScale;
+                    __instance.expert.transform.localScale = scalevec;
+                    __instance.hard.transform.localScale = scalevec;
+                    __instance.normal.transform.localScale = scalevec;
+                    __instance.easy.transform.localScale = scalevec;
+                }
+
+                if (coverArtOn)
+                {
+                    __instance.launchButton.transform.parent.localPosition = new Vector3(4.8f, __instance.launchButton.transform.parent.localPosition.y, __instance.launchButton.transform.parent.localPosition.z);
+                    __instance.chooseDifficultyLabel.transform.localPosition = new Vector3(4.8f, __instance.chooseDifficultyLabel.transform.localPosition.y, __instance.chooseDifficultyLabel.transform.localPosition.z);
+
+                    //tf buttons
+                    Vector3 translation = new Vector3(4.8f, __instance.expert.transform.localPosition.y, __instance.expert.transform.localPosition.z);
+                    __instance.expert.transform.localPosition = translation;
+                    __instance.hard.transform.localPosition = translation;
+                    __instance.normal.transform.localPosition = translation;
+                    __instance.easy.transform.localPosition = translation;
+
+                    //save preview state
+                    previewButton = __instance.songPreviewButton.GetComponentInChildren<GunButton>();
+                }
+                else if(DefaultsSet)
+                {
+                    ReturnCoverArtShift(__instance);
+                }
+
+                if(!MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.DefaultArt)) && !UsingCustomArt)
+                {
+                    ReturnCoverArtShift(__instance);
+                    artObj.SetActive(false);
+                }
+
             }
         }
 
+        private static void ReturnCoverArtShift(LaunchPanel __instance)
+        {
+            __instance.launchButton.transform.parent.localPosition = new Vector3(default_LaunchButtonPos.x, __instance.launchButton.transform.parent.localPosition.y, __instance.launchButton.transform.parent.localPosition.z);
+            __instance.chooseDifficultyLabel.transform.localPosition = new Vector3(default_DifficultyLabelPos.x, __instance.chooseDifficultyLabel.transform.localPosition.y, __instance.chooseDifficultyLabel.transform.localPosition.z);
 
+            Vector3 translation = new Vector3(default_DifficultyButtonPos.x, __instance.expert.transform.localPosition.y, __instance.expert.transform.localPosition.z);
+            __instance.expert.transform.localPosition = translation;
+            __instance.hard.transform.localPosition = translation;
+            __instance.normal.transform.localPosition = translation;
+            __instance.easy.transform.localPosition = translation;
+        }
     }
+
+
 }
+

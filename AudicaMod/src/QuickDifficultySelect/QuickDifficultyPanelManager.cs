@@ -10,16 +10,17 @@ namespace AudicaModding.MeepsUIEnhancements.QuickDifficultySelect
     {
         public QuickDifficultyPanelManager(IntPtr intPtr) : base(intPtr) { }
 
-        public static GameObject bg;
-        public static GameObject EasyButton;
-        public static GameObject NormalButton;
-        public static GameObject HardButton;
-        public static GameObject ExpertButton;
+        public class DiffButt
+        {
+            public GameObject Button;
+            public GunButton ButtonScript;
+        }
 
-        public static GunButton EasyButton_s;
-        public static GunButton NormalButton_s;
-        public static GunButton HardButton_s;
-        public static GunButton ExpertButton_s;
+        public static GameObject bg;
+        public static DiffButt Easy = new DiffButt();
+        public static DiffButt Normal = new DiffButt();
+        public static DiffButt Hard = new DiffButt();
+        public static DiffButt Expert = new DiffButt();
 
         public Dictionary<string, KataConfig.Difficulty> nameToKataDiff = new Dictionary<string, KataConfig.Difficulty>
         {
@@ -42,38 +43,46 @@ namespace AudicaModding.MeepsUIEnhancements.QuickDifficultySelect
             //assign actions
             ButtonUtilities.ButtonSettings settings = new ButtonUtilities.ButtonSettings();
             settings.doMeshExplosion = true;
-            ButtonUtilities.ObjectToButton(EasyButton_s, new Action(() => { ButtonShot(EasyButton); }), settings);
-            ButtonUtilities.ObjectToButton(ExpertButton_s, new Action(() => { ButtonShot(ExpertButton); }), settings);
-            ButtonUtilities.ObjectToButton(NormalButton_s, new Action(() => { ButtonShot(NormalButton); }), settings);
-            ButtonUtilities.ObjectToButton(HardButton_s, new Action(() => { ButtonShot(HardButton); }), settings);
+            ButtonUtilities.ObjectToButton(Easy.ButtonScript, new Action(() => { ButtonShot(Easy.Button); }), settings);
+            ButtonUtilities.ObjectToButton(Expert.ButtonScript, new Action(() => { ButtonShot(Expert.Button); }), settings);
+            ButtonUtilities.ObjectToButton(Normal.ButtonScript, new Action(() => { ButtonShot(Normal.Button); }), settings);
+            ButtonUtilities.ObjectToButton(Hard.ButtonScript, new Action(() => { ButtonShot(Hard.Button); }), settings);
 
 
             //set mats
             var expertstarmedal = GameObject.Find("menu/ShellPage_DifficultySelect/page/ShellPanel_Center/DifficultySelectButton_expert/star_medal");
-            ExpertButton.GetComponent<Renderer>().material = expertstarmedal.GetComponent<Renderer>().material;
+            Expert.Button.GetComponent<Renderer>().material = expertstarmedal.GetComponent<Renderer>().material;
             var hardstarmedal = GameObject.Find("menu/ShellPage_DifficultySelect/page/ShellPanel_Center/DifficultySelectButton_hard/star_medal");
-            HardButton.GetComponent<Renderer>().material = hardstarmedal.GetComponent<Renderer>().material;
+            Hard.Button.GetComponent<Renderer>().material = hardstarmedal.GetComponent<Renderer>().material;
             var normalstarmedal = GameObject.Find("menu/ShellPage_DifficultySelect/page/ShellPanel_Center/DifficultySelectButton_normal/star_medal");
-            NormalButton.GetComponent<Renderer>().material = normalstarmedal.GetComponent<Renderer>().material;
+            Normal.Button.GetComponent<Renderer>().material = normalstarmedal.GetComponent<Renderer>().material;
             var easystarmedal = GameObject.Find("menu/ShellPage_DifficultySelect/page/ShellPanel_Center/DifficultySelectButton_easy/star_medal");
-            EasyButton.GetComponent<Renderer>().material = easystarmedal.GetComponent<Renderer>().material;
+            Easy.Button.GetComponent<Renderer>().material = easystarmedal.GetComponent<Renderer>().material;
 
+            //set highlight
+            Easy.ButtonScript.highlight = Easy.Button.transform.GetChild(1).gameObject;
+            Hard.ButtonScript.highlight = Hard.Button.transform.GetChild(1).gameObject;
+            Normal.ButtonScript.highlight = Normal.Button.transform.GetChild(1).gameObject;
+            Expert.ButtonScript.highlight = Expert.Button.transform.GetChild(1).gameObject;
         }
 
         public void InitButtons()
         {
             //get buttons
+
+
             bg = gameObject.transform.GetChild(0).gameObject;
-            EasyButton = bg.transform.GetChild(0).gameObject;
-            NormalButton = bg.transform.GetChild(1).gameObject;
-            HardButton = bg.transform.GetChild(2).gameObject;
-            ExpertButton = bg.transform.GetChild(3).gameObject;
+
+            Easy.Button = bg.transform.GetChild(0).gameObject;
+            Normal.Button = bg.transform.GetChild(1).gameObject;
+            Hard.Button = bg.transform.GetChild(2).gameObject;
+            Expert.Button = bg.transform.GetChild(3).gameObject;
 
             //get Gun button scripts
-            EasyButton_s = EasyButton.GetComponent<GunButton>();
-            ExpertButton_s = ExpertButton.GetComponent<GunButton>();
-            NormalButton_s = NormalButton.GetComponent<GunButton>();
-            HardButton_s = HardButton.GetComponent<GunButton>();
+            Easy.ButtonScript = Easy.Button.GetComponent<GunButton>();
+            Expert.ButtonScript = Expert.Button.GetComponent<GunButton>();
+            Normal.ButtonScript = Normal.Button.GetComponent<GunButton>();
+            Hard.ButtonScript = Hard.Button.GetComponent<GunButton>();
         }
 
         [HarmonyPatch(typeof(LaunchPanel), "OnEnable", new Type[0])]
@@ -84,17 +93,16 @@ namespace AudicaModding.MeepsUIEnhancements.QuickDifficultySelect
                 var songData = SongDataHolder.I.songData;
 
                 //set button visibility based on availible diffs
-                EasyButton.GetComponent<MeshRenderer>().enabled = songData.hasEasy;
-                ExpertButton.GetComponent<MeshRenderer>().enabled = songData.hasExpert;
-                HardButton.GetComponent<MeshRenderer>().enabled = songData.hasHard;
-                NormalButton.GetComponent<MeshRenderer>().enabled = songData.hasNormal;
+                Easy.Button.GetComponent<MeshRenderer>().enabled = songData.hasEasy;
+                Expert.Button.GetComponent<MeshRenderer>().enabled = songData.hasExpert;
+                Hard.Button.GetComponent<MeshRenderer>().enabled = songData.hasHard;
+                Normal.Button.GetComponent<MeshRenderer>().enabled = songData.hasNormal;
 
                 //set interactivity based onb avalible diffs
-                EasyButton_s.SetInteractable(songData.hasEasy);
-                ExpertButton_s.SetInteractable(songData.hasExpert);
-                HardButton_s.SetInteractable(songData.hasHard);
-                NormalButton_s.SetInteractable(songData.hasNormal);
-
+                Easy.ButtonScript.SetInteractable(songData.hasEasy);
+                Expert.ButtonScript.SetInteractable(songData.hasExpert);
+                Hard.ButtonScript.SetInteractable(songData.hasHard);
+                Normal.ButtonScript.SetInteractable(songData.hasNormal);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using MelonLoader;
 using System;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace AudicaModding.MeepsUIEnhancements.QuickDifficultySelect
     public class QuickDifficultySelect
     {
         private static GameObject prefab;
-        private static GameObject localprefab = null;
+        public static GameObject localprefab = null;
 
         public static Il2CppAssetBundle Asset = null;
 
@@ -32,14 +33,12 @@ namespace AudicaModding.MeepsUIEnhancements.QuickDifficultySelect
 
         public static void InitUI()
         {
-            if (localprefab)
+            if (localprefab || !MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.QuickDifficultyDisplay)))
                 return;
 
             LoadAsset();
 
-
             var diffText = GameObject.Find("menu/ShellPage_Launch/page/ShellPanel_Center/choosediff");
-            MelonLoader.MelonLogger.Log("diffText");
 
             localprefab = GameObject.Instantiate(prefab, diffText.transform);
             localprefab.GetComponent<QuickDifficultyPanelManager>().InitButtons();
