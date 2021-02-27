@@ -4,7 +4,7 @@ using UnityEngine;
 using AudicaModding.MeepsUIEnhancements.Util;
 using Harmony;
 
-namespace AudicaModding.MeepsUIEnhancements.QuickDifficultySelect
+namespace AudicaModding.MeepsUIEnhancements
 {
     public class QuickDifficultyPanelManager : MonoBehaviour
     {

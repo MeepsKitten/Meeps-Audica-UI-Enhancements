@@ -50,11 +50,12 @@ namespace AudicaModding.MeepsUIEnhancements.EasterEggs
 
         private static void ActivateAfterDL()
         {
-            Meeps.SetActive(true);
+            Meeps.SetActive(true);            
             Meeps.transform.localRotation = Quaternion.Euler(0, 180, 0);
             Meeps.transform.localScale = new Vector3(35,35,35);
             Meeps.transform.localPosition = new Vector3(0, -20, 100);
             crotch = Meeps.GetComponentInChildren<GunButton>();
+            crotch.gameObject.layer = 5;
             crotch.doMeshExplosion = false;
             crotch.doHighlightSound = false;
             crotch.doParticles = false;
@@ -81,6 +82,7 @@ namespace AudicaModding.MeepsUIEnhancements.EasterEggs
         {
             private static void Postfix(LaunchPanel __instance)
             {
+                if(Meeps)
                 Meeps.GetComponentInChildren<Collider>().enabled = false;
             }
         }

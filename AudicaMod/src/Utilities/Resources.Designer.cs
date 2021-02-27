@@ -73,9 +73,9 @@ namespace src.Utilities {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] albumart1 {
+        public static byte[] arrowbutton {
             get {
-                object obj = ResourceManager.GetObject("albumart1", resourceCulture);
+                object obj = ResourceManager.GetObject("arrowbutton", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -93,29 +93,9 @@ namespace src.Utilities {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] defaultart1 {
-            get {
-                object obj = ResourceManager.GetObject("defaultart1", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         public static byte[] quickdiffbuttons {
             get {
                 object obj = ResourceManager.GetObject("quickdiffbuttons", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] quickdiffbuttons1 {
-            get {
-                object obj = ResourceManager.GetObject("quickdiffbuttons1", resourceCulture);
                 return ((byte[])(obj));
             }
         }

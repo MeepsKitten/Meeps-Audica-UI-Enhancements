@@ -3,7 +3,7 @@ using MelonLoader;
 using System;
 using UnityEngine;
 
-namespace AudicaModding.MeepsUIEnhancements.QuickDifficultySelect
+namespace AudicaModding.MeepsUIEnhancements
 {
     public class QuickDifficultySelect
     {

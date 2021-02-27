@@ -20,7 +20,7 @@ namespace AudicaModding.MeepsUIEnhancements
 
                     AlbumArt.AlbumArt.DisplayArt();
 
-                    QuickDifficultySelect.QuickDifficultySelect.InitUI();
+                    QuickDifficultySelect.InitUI();
 
                 }
                 else
@@ -29,8 +29,12 @@ namespace AudicaModding.MeepsUIEnhancements
 
                 }
 
+                if (EasterEggs.MeepsterEgg.Meeps)
+                    EasterEggs.MeepsterEgg.Meeps.GetComponentInChildren<Collider>().enabled = true;
+
 
             }
+
 
         }
 

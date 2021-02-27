@@ -5,7 +5,6 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using UnhollowerRuntimeLib;
-using AudicaModding.MeepsUIEnhancements.QuickDifficultySelect;
 using AudicaModding.MeepsUIEnhancements;
 
 [assembly: MelonOptionalDependencies("SongDataLoader")]
@@ -59,7 +58,8 @@ namespace AudicaModding.MeepsUIEnhancements
 
             ClassInjector.RegisterTypeInIl2Cpp<QuickDifficultyPanelManager>();
             ClassInjector.RegisterTypeInIl2Cpp<AlbumArt.AlbumArtShoot>();
-            Util.LoadAssets.PrintResourceNamesToLog();
+            ClassInjector.RegisterTypeInIl2Cpp<PreviewButtonDataStorer>();
+      
 
             defaultAlbumArt = Sprite.Create(Util.LoadAssets.Texture2DFromAssetBundle("UI Ehancements.src.AlbumArt.defaultart", "song.png"), new Rect(0, 0, 256, 256), Vector2.zero);
             defaultAlbumArt.hideFlags |= HideFlags.DontUnloadUnusedAsset;
