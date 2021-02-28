@@ -39,7 +39,11 @@ namespace AudicaModding.MeepsUIEnhancements
 
         public override void OnApplicationStart()
         {
-           Config.Config.RegisterConfig();
+            ClassInjector.RegisterTypeInIl2Cpp<QuickDifficultyPanelManager>();
+            ClassInjector.RegisterTypeInIl2Cpp<AlbumArt.AlbumArtShoot>();
+            ClassInjector.RegisterTypeInIl2Cpp<PreviewButtonDataStorer>();
+
+            Config.Config.RegisterConfig();
 
             if (MelonHandler.Mods.Any(it => (it.Info.SystemType.Name == nameof(SongDataLoader) && (Util.VersionCompare.versionCompare(it.Info.Version, minSongDataLoaderVersion) > 0))))
             {
@@ -55,12 +59,7 @@ namespace AudicaModding.MeepsUIEnhancements
                 }
                 MelonLogger.LogError(textOutput);
             }
-
-            ClassInjector.RegisterTypeInIl2Cpp<QuickDifficultyPanelManager>();
-            ClassInjector.RegisterTypeInIl2Cpp<AlbumArt.AlbumArtShoot>();
-            ClassInjector.RegisterTypeInIl2Cpp<PreviewButtonDataStorer>();
-      
-
+         
             defaultAlbumArt = Sprite.Create(Util.LoadAssets.Texture2DFromAssetBundle("UI Ehancements.src.AlbumArt.defaultart", "song.png"), new Rect(0, 0, 256, 256), Vector2.zero);
             defaultAlbumArt.hideFlags |= HideFlags.DontUnloadUnusedAsset;
             GameObject.DontDestroyOnLoad(defaultAlbumArt);
