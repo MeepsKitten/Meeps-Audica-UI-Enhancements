@@ -62,7 +62,7 @@ namespace AudicaModding.MeepsUIEnhancements
                     PracticeModeUI = __instance.gameObject.transform.GetChild(0).gameObject;
                     InitButton();
                     obj_instance.transform.SetParent(__instance.gameObject.transform);
-                    obj_instance.transform.localPosition = new Vector3(0.8f, 6.34f, 1.16f);
+                    obj_instance.transform.localPosition = new Vector3(0.8f, 6.335f, 1.16f);
                     obj_instance.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
                 }
             }
