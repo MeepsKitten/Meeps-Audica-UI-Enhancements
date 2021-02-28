@@ -11,34 +11,22 @@ namespace AudicaModding.MeepsUIEnhancements
         [HarmonyPatch(typeof(GunButton), "IsHighlighted", new Type[0] { })]
         private static class SongPreviewToggleOverride
         {
-            private static bool Prefix(GunButton __instance, ref bool __result)
+            private static void Postfix(ref bool __result, GunButton __instance)
             {
-              
-
-                if (__instance.highlight != null)
+                if (MelonLoader.MelonPrefs.GetBool("U.I. Enhancements", nameof(Config.Config.SongPreviewToggle)))
                 {
-                    __result = __instance.highlight.activeInHierarchy;
-                    
-                }
-                else
-                {
-                    __result = false;
-                    return false;
-                }
-
-                PreviewButtonDataStorer buttstore = __instance.gameObject.GetComponentInChildren<PreviewButtonDataStorer>();
-                if (buttstore)
-                {
-                    if (buttstore.pressed)
+                    PreviewButtonDataStorer buttstore = __instance.gameObject.GetComponentInChildren<PreviewButtonDataStorer>();
+                    if (buttstore)
                     {
-                        __result = true;
-                        MelonLoader.MelonLogger.Log("Highlight ovveridden to true for: " + __instance.transform.parent.name);
+                        if (buttstore.pressed)
+                        {
+                            __result = true;
+                            //MelonLoader.MelonLogger.Log("Highlight ovveridden to true for: " + __instance.transform.parent.name);
+                        }
                     }
                 }
 
-                return false;
             }
-
         }
 
         //Patch Init to add custom data storer and override the gunbutton script on the preview icon
@@ -47,24 +35,26 @@ namespace AudicaModding.MeepsUIEnhancements
         {
             private static void Prefix(SongSelectItem __instance)
             {
-                PreviewButtonDataStorer comp = __instance.songPreview.GetComponent<PreviewButtonDataStorer>();
-                PreviewButtonDataStorer.previousbutton = null;
-
-                if (!comp)
+                if (MelonLoader.MelonPrefs.GetBool("U.I. Enhancements", nameof(Config.Config.SongPreviewToggle)))
                 {
-                    comp = __instance.songPreview.gameObject.AddComponent<PreviewButtonDataStorer>();
-                    comp.hideFlags |= HideFlags.DontUnloadUnusedAsset;
-                    GameObject.DontDestroyOnLoad(comp);
-                }
-                else
-                {
-                    comp.pressed = false;
-                }
+                    PreviewButtonDataStorer comp = __instance.songPreview.GetComponent<PreviewButtonDataStorer>();
 
-                __instance.songPreview.onHitEvent = new UnityEvent();
-                Action shoot = new Action(() => { comp.PreviewButtonShoot(); });
-                __instance.songPreview.onHitEvent.AddListener(shoot);
+                    if (!comp)
+                    {
+                        comp = __instance.songPreview.gameObject.AddComponent<PreviewButtonDataStorer>();
+                        comp.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+                        GameObject.DontDestroyOnLoad(comp);
+                        comp.pressed = false;
+                    }
+                    else
+                    {
+                        comp.pressed = false;
+                    }
 
+                    __instance.songPreview.onHitEvent = new UnityEvent();
+                    Action shoot = new Action(() => { comp.PreviewButtonShoot(); });
+                    __instance.songPreview.onHitEvent.AddListener(shoot);
+                }
             }
 
         }

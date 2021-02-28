@@ -26,19 +26,30 @@ namespace AudicaModding.MeepsUIEnhancements
                 MelonLogger.Log("button was previously not pressed");
             }
 
-            if (previousbutton)
+            try
             {
-                previousbutton.pressed = false;
-                MelonLogger.Log("deselected: " + previousbutton.transform.parent.name);
-            }
-            else
-            {
-                MelonLogger.Log("no previous button");
-            }
+                if (previousbutton)
+                {
+                    MelonLogger.Log("deselected: " + previousbutton.transform.parent.name);
 
-            pressed = true;
-            MelonLogger.Log("selected: " + transform.parent.name);
-            previousbutton = this;
+                    previousbutton.pressed = false;
+                }
+                else
+                {
+                    MelonLogger.Log("no previous button");
+                }
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Log("Exception removing previous button.");
+            }
+            finally
+            {
+                pressed = true;
+                MelonLogger.Log("selected: " + transform.parent.name);
+                previousbutton = this;
+            }
         }
+
     }
 }
