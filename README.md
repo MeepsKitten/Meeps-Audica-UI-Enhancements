@@ -1,5 +1,7 @@
 # Meeps' Audica UI Enhancements
  UI tweaks that make Me[eps] happy
+ 
+ [Skip to download](https://github.com/MeepsKitten/Meeps-Audica-UI-Enhancements/blob/main/README.md#download)
 
 ## Album Art (requires Song Data Loader)
 Mappers can add cover art to their songs in newer versions of NotReaper. This mod shows them in game!
