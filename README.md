@@ -32,7 +32,7 @@ Tons of settings to customize and tweak a whole bunch of stuff
 - song previews on the song list can be set to toggleable, so that you dont have to hover over it to hear it; you just need to shoot it
 - a very... amusing(?) easter egg
 
-#Compatibility
+# Compatibility
 - There is a known issue with the "Grind Mode" mod when switching arenas. There is a bug in that mod which causes issues with several other mods. Use of the Grind Mode mod is not recommend by me in general until the bug is fixed
 
 # Download
