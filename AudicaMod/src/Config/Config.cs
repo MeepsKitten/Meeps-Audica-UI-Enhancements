@@ -1,25 +1,33 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using MelonLoader;
 using System;
 using System.Reflection;
+using UnityEngine;
 
 namespace AudicaModding.MeepsUIEnhancements.Config
 {
     public class Config
     {
-        public const string CATegory = "U.I. Enhancements";
+        public const string CATegory = "UX Enhancements";
 
-        public static string CoverArtSection = "[Header]Cover Art";
+        public static string CoverArtSection;
         public static bool CoverArt;
         public static float CoverArtBirghtness;
         public static bool DefaultArt;
 
-        public static string AdditionalElements = "[Header]Additional Elements";
+        public static string AdditionalElements;
         public static bool QuickDifficultyDisplay;
         public static bool PracticeModeMinimizationButton;
 
-        public static string Tweaks = "[Header]Tweaks";
+        public static string SongProgressUISection;
+        public static bool SongProgressEnabled;
+        public static bool ShowProgressOnRight;
+        public static bool ShowProgressAsPercentage;
+
+
+        public static string Tweaks;
         public static bool HideOldDifficultyButton;
+        public static bool DisableMineSound;
         public static bool CenterDifficultyButtonText;
         public static bool SongPreviewToggle;
         public static float BloomAmount; //game default is: 5.24
@@ -27,40 +35,48 @@ namespace AudicaModding.MeepsUIEnhancements.Config
 
         public static void RegisterConfig()
         {
-            MelonPrefs.RegisterString(CATegory, nameof(CoverArtSection), "", CoverArtSection);
+            MelonPreferences.CreateEntry(CATegory, nameof(CoverArtSection), "", "[Header]Cover Art");
 
-            MelonPrefs.RegisterBool(CATegory, nameof(CoverArt), true, "Display Cover Art");
-            MelonPrefs.RegisterBool(CATegory, nameof(DefaultArt), true, "Display default art if there is none provided");
-            MelonPrefs.RegisterFloat(CATegory, nameof(CoverArtBirghtness), 90, "Changes the brightness (value) of the album art [0,100,5,100]");
+            MelonPreferences.CreateEntry(CATegory, nameof(CoverArt), true, "Display Cover Art");
+            MelonPreferences.CreateEntry(CATegory, nameof(DefaultArt), true, "Display default art if there is none provided");
+            MelonPreferences.CreateEntry(CATegory, nameof(CoverArtBirghtness), 90.0f, "Changes the brightness (value) of the album art [0,100,5,100]");
 
-            MelonPrefs.RegisterString(CATegory, nameof(AdditionalElements), "", AdditionalElements);
-            MelonPrefs.RegisterBool(CATegory, nameof(QuickDifficultyDisplay), true, "Display extra buttons to allow for quick difficulty selection");
-            MelonPrefs.RegisterBool(CATegory, nameof(PracticeModeMinimizationButton), true, "Adds a button to minimize the practice mode UI");
+            MelonPreferences.CreateEntry(CATegory, nameof(AdditionalElements), "", "[Header]Additional Elements");
+            MelonPreferences.CreateEntry(CATegory, nameof(QuickDifficultyDisplay), true, "Display extra buttons to allow for quick difficulty selection");
+            MelonPreferences.CreateEntry(CATegory, nameof(PracticeModeMinimizationButton), true, "Adds a button to minimize the practice mode UI");
 
-            MelonPrefs.RegisterString(CATegory, nameof(Tweaks), "", Tweaks);
-            MelonPrefs.RegisterBool(CATegory, nameof(HideOldDifficultyButton), false, "If using you're the \"Quick Difficulty Display\" this will hide the old button");
-            MelonPrefs.RegisterBool(CATegory, nameof(CenterDifficultyButtonText), true, "Centers the difficulty name text in it's text box");
-            MelonPrefs.RegisterBool(CATegory, nameof(SongPreviewToggle), true, "Allows you to shoot the song preview icon to keep the audio playing without needing to continue to hover over it");
-            MelonPrefs.RegisterFloat(CATegory, nameof(BloomAmount), 5.24f, "Changes the intensity of the bloom effect (the glow around stuff) [0,5.24,0.24,5.24]");
-            MelonPrefs.RegisterBool(CATegory, nameof(MeepsterEgg), false, "??? (be prepared for a huge lag spike)");
+            MelonPreferences.CreateEntry(CATegory, nameof(SongProgressUISection), "", "[Header]Song Progress Display");
+            MelonPreferences.CreateEntry(CATegory, nameof(SongProgressEnabled), true, "Enables a UI element that shows song progress in numerical format above the progress bar");
+            MelonPreferences.CreateEntry(CATegory, nameof(ShowProgressOnRight), false, "Moves the progress UI to the right side of the score display instead of the left");
+            MelonPreferences.CreateEntry(CATegory, nameof(ShowProgressAsPercentage), false, "Changes the Song Progress Display to show a percentage of the song completed (as opposed to exact time values)");
 
-            OnModSettingsApplied();
+
+            MelonPreferences.CreateEntry(CATegory, nameof(Tweaks), "", "[Header]Tweaks");
+            MelonPreferences.CreateEntry(CATegory, nameof(DisableMineSound), true, "Disables the sound of mines passing you");
+            MelonPreferences.CreateEntry(CATegory, nameof(HideOldDifficultyButton), false, "If using you're the \"Quick Difficulty Display\" this will hide the old button");
+            MelonPreferences.CreateEntry(CATegory, nameof(CenterDifficultyButtonText), true, "Centers the difficulty name text in it's text box");
+            MelonPreferences.CreateEntry(CATegory, nameof(SongPreviewToggle), true, "Allows you to shoot the song preview icon to keep the audio playing without needing to continue to hover over it");
+            MelonPreferences.CreateEntry(CATegory, nameof(BloomAmount), 5.24f, "Changes the intensity of the bloom effect (the glow around stuff) [0,10.48,0.24,5.24]");
+            MelonPreferences.CreateEntry(CATegory, nameof(MeepsterEgg), false, "be prepared for a huge lag spike");
+
+            OnPreferencesSaved();
         }
 
 
 
-        public static void OnModSettingsApplied()
+        public static void OnPreferencesSaved()
         {
             foreach (var fieldInfo in typeof(Config).GetFields(BindingFlags.Static | BindingFlags.Public))
-            {
+            {               
+
                 if (fieldInfo.FieldType == typeof(int))
-                    fieldInfo.SetValue(null, MelonPrefs.GetInt(CATegory, fieldInfo.Name));
+                    fieldInfo.SetValue(null, MelonPreferences.GetEntryValue<int>(CATegory, fieldInfo.Name));
 
                 if (fieldInfo.FieldType == typeof(bool))
                 {
-                    fieldInfo.SetValue(null, MelonPrefs.GetBool(CATegory, fieldInfo.Name));
+                    fieldInfo.SetValue(null, MelonPreferences.GetEntryValue<bool>(CATegory, fieldInfo.Name));
 
-                    if ((fieldInfo.Name == nameof(QuickDifficultyDisplay)) && !MelonPrefs.GetBool(CATegory, fieldInfo.Name))
+                    if ((fieldInfo.Name == nameof(QuickDifficultyDisplay)) && !MelonPreferences.GetEntryValue<bool>(CATegory, fieldInfo.Name))
                     {
                         if (QuickDifficultySelect.localprefab)
                             QuickDifficultySelect.localprefab.SetActive(false);
@@ -71,7 +87,7 @@ namespace AudicaModding.MeepsUIEnhancements.Config
                             QuickDifficultySelect.localprefab.SetActive(true);
                     }
 
-                    if ((fieldInfo.Name == nameof(MeepsterEgg)) && MelonPrefs.GetBool(CATegory, fieldInfo.Name))
+                    if ((fieldInfo.Name == nameof(MeepsterEgg)) && MelonPreferences.GetEntryValue<bool>(CATegory, fieldInfo.Name))
                     {
                         EasterEggs.MeepsterEgg.ShowMeepsterEgg();
                     }
@@ -80,12 +96,18 @@ namespace AudicaModding.MeepsUIEnhancements.Config
                         EasterEggs.MeepsterEgg.HideMeepsterEgg();
                     }
 
+                    if ((fieldInfo.Name == nameof(ShowProgressOnRight)))
+                    {
+                        var x = MelonPreferences.GetEntryValue<bool>(CATegory, nameof(ShowProgressOnRight)) ? 0.83f : 0.27f;
+                        if(SongTimeUI.localprefab)
+                            SongTimeUI.localprefab.transform.localPosition = new Vector3(x, 1.24f, 1.492f);
+                    }
 
                 }
 
                 if (fieldInfo.FieldType == typeof(float))
                 {
-                    fieldInfo.SetValue(null, MelonPrefs.GetFloat(CATegory, fieldInfo.Name));
+                    fieldInfo.SetValue(null, MelonPreferences.GetEntryValue<float>(CATegory, fieldInfo.Name));
                 }
 
             }
@@ -96,7 +118,7 @@ namespace AudicaModding.MeepsUIEnhancements.Config
         {
             private static void Prefix(PostprocController __instance)
             {
-                __instance.mOriginalBloomIntensity = MelonPrefs.GetFloat(CATegory, nameof(BloomAmount));
+                __instance.mOriginalBloomIntensity = MelonPreferences.GetEntryValue<float>(CATegory, nameof(BloomAmount));
             }
         }
 
@@ -105,7 +127,7 @@ namespace AudicaModding.MeepsUIEnhancements.Config
         {
             private static void Postfix(LaunchPanel __instance)
             {
-                bool active = !(MelonPrefs.GetBool(CATegory, nameof(HideOldDifficultyButton)) && MelonPrefs.GetBool(CATegory, nameof(QuickDifficultyDisplay)));
+                bool active = !(MelonPreferences.GetEntryValue<bool>(CATegory, nameof(HideOldDifficultyButton)) && MelonPreferences.GetEntryValue<bool>(CATegory, nameof(QuickDifficultyDisplay)));
 
                 //set active state of old button renderer based on prefs
                 __instance.expert.transform.GetChild(0).GetComponent<UnityEngine.MeshRenderer>().enabled = active;
@@ -122,7 +144,7 @@ namespace AudicaModding.MeepsUIEnhancements.Config
                
                 //set text alignment on diff name based on prefs
                 TMPro.TextAlignmentOptions align = TMPro.TextAlignmentOptions.MidlineLeft;
-                if (MelonPrefs.GetBool(CATegory, nameof(CenterDifficultyButtonText)))
+                if (MelonPreferences.GetEntryValue<bool>(CATegory, nameof(CenterDifficultyButtonText)))
                 {
                     align = TMPro.TextAlignmentOptions.Center;
                 }

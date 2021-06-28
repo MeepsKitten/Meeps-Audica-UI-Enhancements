@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AudicaModding.MeepsUIEnhancements.Util;
-using Harmony;
+using HarmonyLib;
 
 namespace AudicaModding.MeepsUIEnhancements
 {

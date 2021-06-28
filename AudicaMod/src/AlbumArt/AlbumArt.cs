@@ -4,7 +4,7 @@ using UnityEngine;
 using Il2CppSystem.IO;
 using UnityEngine.UI;
 using System.Collections;
-using Harmony;
+using HarmonyLib;
 using System;
 using AudicaModding.MeepsUIEnhancements.Util;
 
@@ -69,7 +69,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
 
         public static void DisplayArt()
         {
-            if (!MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.CoverArt)))
+            if (!MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.CoverArt)))
                 return;
 
             if (MeepsUIEnhancements.songDataLoaderInstalled)
@@ -102,13 +102,13 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             //control cover art brightness
             float h, s, v;
             Color.RGBToHSV(image.GetComponent<Image>().color, out h, out s, out v);
-            v = MelonPrefs.GetFloat(Config.Config.CATegory, nameof(Config.Config.CoverArtBirghtness));
+            v = MelonPreferences.GetEntryValue<float>(Config.Config.CATegory, nameof(Config.Config.CoverArtBirghtness));
             image.GetComponent<Image>().color = Color.HSVToRGB(h, s, v / 100);
         }
 
         public static void HideArt()
         {
-            if (!MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.CoverArt)))
+            if (!MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.CoverArt)))
                 return;
 
             if (artObj)
@@ -128,7 +128,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             {
                 if (albumArtData.Length <= 0)
                 {
-                    MelonLogger.LogWarning("cover art data empty");
+                    MelonLogger.Warning("cover art data empty");
                     return null;
                 }
 
@@ -137,7 +137,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             }
             else
             {
-                //MelonLogger.LogWarning("cover art data is null");
+                //MelonLogger.MsgWarning("cover art data is null");
             }
 
             return null;
@@ -183,8 +183,8 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             private static void Postfix(LaunchPanel __instance)
             {
 
-                var coverArtOn = MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.CoverArt));
-                var diffDispOn = MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.QuickDifficultyDisplay));
+                var coverArtOn = MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.CoverArt));
+                var diffDispOn = MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.QuickDifficultyDisplay));
 
                 if(!DefaultsSet)
                 {
@@ -255,7 +255,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
                     ReturnCoverArtShift(__instance);
                 }
 
-                if(!MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.DefaultArt)) && !UsingCustomArt)
+                if(!MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.DefaultArt)) && !UsingCustomArt)
                 {
                     ReturnCoverArtShift(__instance);
                     artObj.SetActive(false);

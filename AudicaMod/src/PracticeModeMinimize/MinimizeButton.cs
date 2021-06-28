@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using AudicaModding.MeepsUIEnhancements.Util;
-using Harmony;
+using HarmonyLib;
 using System;
+using MelonLoader;
 
 namespace AudicaModding.MeepsUIEnhancements
 {
@@ -57,7 +58,7 @@ namespace AudicaModding.MeepsUIEnhancements
         {
             private static void Postfix(PracticeMode __instance)
             {
-                if (MelonLoader.MelonPrefs.GetBool("U.I. Enhancements", nameof(Config.Config.PracticeModeMinimizationButton)))
+                if (MelonPreferences.GetEntryValue<bool>("U.I. Enhancements", nameof(Config.Config.PracticeModeMinimizationButton)))
                 {
                     PracticeModeUI = __instance.gameObject.transform.GetChild(0).gameObject;
                     InitButton();

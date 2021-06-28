@@ -1,7 +1,8 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using System;
 using UnityEngine.Events;
 using UnityEngine;
+using MelonLoader;
 
 namespace AudicaModding.MeepsUIEnhancements
 {
@@ -13,7 +14,7 @@ namespace AudicaModding.MeepsUIEnhancements
         {
             private static void Postfix(ref bool __result, GunButton __instance)
             {
-                if (MelonLoader.MelonPrefs.GetBool("U.I. Enhancements", nameof(Config.Config.SongPreviewToggle)))
+                if (MelonPreferences.GetEntryValue<bool>("U.I. Enhancements", nameof(Config.Config.SongPreviewToggle)))
                 {
                     PreviewButtonDataStorer buttstore = __instance.gameObject.GetComponentInChildren<PreviewButtonDataStorer>();
                     if (buttstore)
@@ -21,7 +22,7 @@ namespace AudicaModding.MeepsUIEnhancements
                         if (buttstore.pressed)
                         {
                             __result = true;
-                            //MelonLoader.MelonLogger.Log("Highlight ovveridden to true for: " + __instance.transform.parent.name);
+                            //MelonLoader.MelonLogger.Msg("Highlight ovveridden to true for: " + __instance.transform.parent.name);
                         }
                     }
                 }
@@ -35,7 +36,7 @@ namespace AudicaModding.MeepsUIEnhancements
         {
             private static void Prefix(SongSelectItem __instance)
             {
-                if (MelonLoader.MelonPrefs.GetBool("U.I. Enhancements", nameof(Config.Config.SongPreviewToggle)))
+                if (MelonPreferences.GetEntryValue<bool>("U.I. Enhancements", nameof(Config.Config.SongPreviewToggle)))
                 {
                     PreviewButtonDataStorer comp = __instance.songPreview.GetComponent<PreviewButtonDataStorer>();
 

@@ -16,11 +16,11 @@ namespace AudicaModding.MeepsUIEnhancements
     {
         public static class BuildInfo
         {
-            public const string Name = "MeepsUIEnhancements";  // Name of the Mod.  (MUST BE SET)
+            public const string Name = "MeepsUXEnhancements";  // Name of the Mod.  (MUST BE SET)
             public const string Author = "MeepsKitten"; // Author of the Mod.  (Set as null if none)
             public const string Company = null; // Company that made the Mod.  (Set as null if none)
-            public const string Version = "1.0.2"; // Version of the Mod.  (MUST BE SET)
-            public const string DownloadLink = null; // Download Link for the Mod.  (Set as null if none)
+            public const string Version = "1.2.0"; // Version of the Mod.  (MUST BE SET)
+            public const string DownloadLink = "https://github.com/MeepsKitten/Meeps-Audica-UI-Enhancements/releases/latest"; // Download Link for the Mod.  (Set as null if none)
         }
 
         public static bool songDataLoaderInstalled = false;
@@ -32,9 +32,9 @@ namespace AudicaModding.MeepsUIEnhancements
             "Album Art Display"
         };
 
-        public override void OnModSettingsApplied()
+        public override void OnPreferencesSaved()
         {
-            Config.Config.OnModSettingsApplied();
+            Config.Config.OnPreferencesSaved();
         }
 
         public override void OnApplicationStart()
@@ -42,13 +42,14 @@ namespace AudicaModding.MeepsUIEnhancements
             ClassInjector.RegisterTypeInIl2Cpp<QuickDifficultyPanelManager>();
             ClassInjector.RegisterTypeInIl2Cpp<AlbumArt.AlbumArtShoot>();
             ClassInjector.RegisterTypeInIl2Cpp<PreviewButtonDataStorer>();
+            ClassInjector.RegisterTypeInIl2Cpp<SongTimeUIManager>();
 
             Config.Config.RegisterConfig();
 
             if (MelonHandler.Mods.Any(it => (it.Info.SystemType.Name == nameof(SongDataLoader) && (Util.VersionCompare.versionCompare(it.Info.Version, minSongDataLoaderVersion) > 0))))
             {
                 songDataLoaderInstalled = true;
-                MelonLogger.Log("Song Data Loader is installed. Enabling integration");
+                MelonLogger.Msg("Song Data Loader is installed. Enabling integration");
             }
             else
             {
@@ -57,7 +58,7 @@ namespace AudicaModding.MeepsUIEnhancements
                 {
                     textOutput += "\n" + memo;
                 }
-                MelonLogger.LogError(textOutput);
+                MelonLogger.Error(textOutput);
             }
          
             defaultAlbumArt = Sprite.Create(Util.LoadAssets.Texture2DFromAssetBundle("UI Ehancements.src.AlbumArt.defaultart", "song.png"), new Rect(0, 0, 256, 256), Vector2.zero);

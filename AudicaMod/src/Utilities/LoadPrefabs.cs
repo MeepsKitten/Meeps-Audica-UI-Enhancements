@@ -45,7 +45,7 @@ namespace AudicaModding.MeepsUIEnhancements.Util
         {
             foreach(string name in typeof(LoadAssets).Assembly.GetManifestResourceNames())
             {
-                MelonLoader.MelonLogger.Log(name);
+                MelonLoader.MelonLogger.Msg(name);
             }
         }
     }

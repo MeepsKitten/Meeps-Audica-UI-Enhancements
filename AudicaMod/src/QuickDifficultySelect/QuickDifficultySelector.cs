@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using MelonLoader;
 using System;
 using UnityEngine;
@@ -33,7 +33,7 @@ namespace AudicaModding.MeepsUIEnhancements
 
         public static void InitUI()
         {
-            if (localprefab || !MelonPrefs.GetBool(Config.Config.CATegory, nameof(Config.Config.QuickDifficultyDisplay)))
+            if (localprefab || !MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.QuickDifficultyDisplay)))
                 return;
 
             LoadAsset();
