@@ -16,6 +16,17 @@ namespace AudicaModding.MeepsUIEnhancements.Util
             return prefab;
         }
 
+        public static GameObject ChildObjectFromAssetBundle(string assemblyResourceName, string bundledObjectName, Transform parent)
+        {
+            var bundle = LoadAssetData(assemblyResourceName);
+            var prefab = GameObject.Instantiate<GameObject>(bundle.LoadAsset(bundledObjectName).Cast<GameObject>(),parent);
+
+            prefab.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            GameObject.DontDestroyOnLoad(prefab);
+
+            return prefab;
+        }
+
         public static Texture2D Texture2DFromAssetBundle(string assemblyResourceName, string bundledObjectName)
         {
             var bundle = LoadAssetData(assemblyResourceName);
