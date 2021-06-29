@@ -1,4 +1,4 @@
-# Meeps' Audica UI Enhancements
+# Meeps' Audica UX Enhancements
  UI tweaks that make Me[eps] happy
  
  [Skip to download](https://github.com/MeepsKitten/Meeps-Audica-UI-Enhancements/blob/main/README.md#download)
