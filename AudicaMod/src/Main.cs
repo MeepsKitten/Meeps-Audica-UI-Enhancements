@@ -16,10 +16,10 @@ namespace AudicaModding.MeepsUIEnhancements
     {
         public static class BuildInfo
         {
-            public const string Name = "MeepsUXEnhancements";  // Name of the Mod.  (MUST BE SET)
-            public const string Author = "MeepsKitten"; // Author of the Mod.  (Set as null if none)
+            public const string Name = "MeepsUXEnhancements-XionEdit";  // Name of the Mod.  (MUST BE SET)
+            public const string Author = "MeepsKitten/XionsProphecy"; // Author of the Mod.  (Set as null if none)
             public const string Company = null; // Company that made the Mod.  (Set as null if none)
-            public const string Version = "1.2.0"; // Version of the Mod.  (MUST BE SET)
+            public const string Version = "1.2.1"; // Version of the Mod.  (MUST BE SET)
             public const string DownloadLink = "https://github.com/MeepsKitten/Meeps-Audica-UI-Enhancements/releases/latest"; // Download Link for the Mod.  (Set as null if none)
         }
 

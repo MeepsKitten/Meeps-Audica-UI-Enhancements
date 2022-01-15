@@ -56,7 +56,7 @@ namespace AudicaModding.MeepsUIEnhancements.Config
             MelonPreferences.CreateEntry(CATegory, nameof(HideOldDifficultyButton), false, "If using you're the \"Quick Difficulty Display\" this will hide the old button");
             MelonPreferences.CreateEntry(CATegory, nameof(CenterDifficultyButtonText), true, "Centers the difficulty name text in it's text box");
             MelonPreferences.CreateEntry(CATegory, nameof(SongPreviewToggle), true, "Allows you to shoot the song preview icon to keep the audio playing without needing to continue to hover over it");
-            MelonPreferences.CreateEntry(CATegory, nameof(BloomAmount), 5.24f, "Changes the intensity of the bloom effect (the glow around stuff) [0,10.48,0.24,5.24]");
+            MelonPreferences.CreateEntry(CATegory, nameof(BloomAmount), 0f, "Changes the intensity of the bloom effect (the glow around stuff) [0,10.48,0.24,5.24]");
             MelonPreferences.CreateEntry(CATegory, nameof(MeepsterEgg), false, "be prepared for a huge lag spike");
 
             OnPreferencesSaved();
@@ -70,11 +70,11 @@ namespace AudicaModding.MeepsUIEnhancements.Config
             {               
 
                 if (fieldInfo.FieldType == typeof(int))
-                    fieldInfo.SetValue(null, MelonPreferences.GetEntryValue<int>(CATegory, fieldInfo.Name));
+                    fieldInfo.SetValue(value, MelonPreferences.GetEntryValue<int>(CATegory, fieldInfo.Name));
 
                 if (fieldInfo.FieldType == typeof(bool))
                 {
-                    fieldInfo.SetValue(null, MelonPreferences.GetEntryValue<bool>(CATegory, fieldInfo.Name));
+                    fieldInfo.SetValue(value, MelonPreferences.GetEntryValue<bool>(CATegory, fieldInfo.Name));
 
                     if ((fieldInfo.Name == nameof(QuickDifficultyDisplay)) && !MelonPreferences.GetEntryValue<bool>(CATegory, fieldInfo.Name))
                     {
@@ -107,7 +107,7 @@ namespace AudicaModding.MeepsUIEnhancements.Config
 
                 if (fieldInfo.FieldType == typeof(float))
                 {
-                    fieldInfo.SetValue(null, MelonPreferences.GetEntryValue<float>(CATegory, fieldInfo.Name));
+                    fieldInfo.SetValue(value, MelonPreferences.GetEntryValue<float>(CATegory, fieldInfo.Name));
                 }
 
             }
