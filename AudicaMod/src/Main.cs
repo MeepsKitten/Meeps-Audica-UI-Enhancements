@@ -7,7 +7,7 @@ using System.IO;
 using UnhollowerRuntimeLib;
 using AudicaModding.MeepsUIEnhancements;
 
-[assembly: MelonOptionalDependencies("SongDataLoader")]
+[assembly: MelonOptionalDependencies(new string[] { "SongDataLoader", "SongBrowser" })]
 
 namespace AudicaModding.MeepsUIEnhancements
 {
@@ -25,12 +25,21 @@ namespace AudicaModding.MeepsUIEnhancements
 
         public static bool songDataLoaderInstalled = false;
         private string minSongDataLoaderVersion = "1.1.0";
+        private string problematicSongBrowserVersion = "3.0.3";
         public static Sprite defaultAlbumArt;
+
+        public static bool songBrowserInstalled = false;
+
 
         public string[] SongDataLoaderDependants =
         {
             "Album Art Display"
         };
+
+        public override void OnUpdate()
+        {
+            //WatchController.Update();
+        }
 
         public override void OnPreferencesSaved()
         {
@@ -43,6 +52,7 @@ namespace AudicaModding.MeepsUIEnhancements
             ClassInjector.RegisterTypeInIl2Cpp<AlbumArt.AlbumArtShoot>();
             ClassInjector.RegisterTypeInIl2Cpp<PreviewButtonDataStorer>();
             ClassInjector.RegisterTypeInIl2Cpp<SongTimeUIManager>();
+            ClassInjector.RegisterTypeInIl2Cpp<SongTimeOverlayUIManager>();
 
             Config.Config.RegisterConfig();
 
@@ -60,10 +70,19 @@ namespace AudicaModding.MeepsUIEnhancements
                 }
                 MelonLogger.Error(textOutput);
             }
-         
+
+            if (MelonHandler.Mods.Any(it => (it.Info.SystemType.Name == nameof(SongBrowser) && (Util.VersionCompare.versionCompare(it.Info.Version, problematicSongBrowserVersion) > 0))))
+            {
+                songBrowserInstalled = true;
+                MelonLogger.Warning("Please note that the song progress indicator will not display when using Song Browser's Marathon Mode");
+            }
+            
+
             defaultAlbumArt = Sprite.Create(Util.LoadAssets.Texture2DFromAssetBundle("UI Ehancements.src.AlbumArt.defaultart", "song.png"), new Rect(0, 0, 256, 256), Vector2.zero);
             defaultAlbumArt.hideFlags |= HideFlags.DontUnloadUnusedAsset;
             GameObject.DontDestroyOnLoad(defaultAlbumArt);
+
+           
         }
 
     }

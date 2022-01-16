@@ -13,16 +13,18 @@ namespace AudicaModding.MeepsUIEnhancements
     {
         public SongTimeUIManager(IntPtr intPtr) : base(intPtr) { }
 
-        public static GameObject scorp;
-        public static GameObject panel;
+        public GameObject scorp;
+        public GameObject panel;
 
-        private static TextMeshProUGUI display;
+        private TextMeshProUGUI display;
         void Awake()
         {
             display = GetComponentInChildren<TextMeshProUGUI>();
-            MelonLogger.Msg("found display text");
-            panel = display.gameObject.transform.parent.GetChild(1).gameObject;
-            MelonLogger.Msg($"found panel {panel.name}");          
+            MeepsLogger.Msg("found display text");
+
+                panel = display.gameObject.transform.parent.GetChild(1).gameObject;
+                MeepsLogger.Msg($"found panel {panel.name}");
+      
         }
 
         void Update()
@@ -66,11 +68,60 @@ namespace AudicaModding.MeepsUIEnhancements
                 scorp = GameObject.Find("ScoreKeeperDisplay/background");
                 if (scorp)
                 {
-                    MelonLogger.Msg($"found scorepanel {scorp.name}");
+                    MeepsLogger.Msg($"found scorepanel {scorp.name}");
 
                     panel.GetComponent<Renderer>().material = scorp.GetComponent<Renderer>().material;
                 }
             }
+        }
+    }
+
+    class SongTimeOverlayUIManager : MonoBehaviour
+    {
+        public SongTimeOverlayUIManager(IntPtr intPtr) : base(intPtr) { }
+
+        private TextMeshProUGUI display;
+        void Awake()
+        {
+            display = GetComponentInChildren<TextMeshProUGUI>();
+            MeepsLogger.Msg("found display text");
+        }
+
+        void Update()
+        {
+            if (!AudioDriver.I) return;
+
+
+            //update display with time
+            if (display)
+            {
+                var seconds = AudioDriver.I.GetSongPositionSeconds(AudioDriver.TickContext.Scoring);
+                var curTime = SongProgressDisplay.SecondsToMinSec(seconds);
+
+                var totalLengthInSex = (SongTimeUI.SongLengthMins * 60) + SongTimeUI.SongLengthSex;
+
+                if (seconds <= totalLengthInSex)
+                {
+
+                    if (!Config.Config.ShowProgressAsPercentage)
+                    {
+                        display.text = $"{curTime}/{SongTimeUI.SongLength}";
+                    }
+                    else
+                    {
+                        display.text = $"{(int)(seconds / totalLengthInSex * 100)}% Complete";
+
+                    }
+                }
+                else
+                {
+                    if (Config.Config.ShowProgressAsPercentage)
+                    {
+                        display.text = @"\(^-^)/";
+                    }
+                }
+            }
+          
         }
     }
 }

@@ -35,7 +35,7 @@ namespace AudicaModding.MeepsUIEnhancements
 
                 if(state == MenuState.State.Launched)
                 {
-                    SongTimeUI.Show();
+                        SongTimeUI.Show();
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace AudicaModding.MeepsUIEnhancements
         {
             private static void Postfix(SongPlayHistory __instance, string songID, int score, KataConfig.Difficulty difficulty, float percent, bool fullCombo, bool noFail)
             {
-                MelonLogger.Msg("hide ui");
+                MeepsLogger.Msg("hide ui");
 
                 SongTimeUI.Hide();
             }
@@ -87,5 +87,21 @@ namespace AudicaModding.MeepsUIEnhancements
             }
 
         }
+
+        /*[HarmonyPatch(typeof(GunButton), "NativeFieldInfoPtr_disableHighlightHaptics", new Type[0])]
+        private static class InterceptHaptics
+        {
+            private static bool Prefix(bool __result, string eventName, UAudioEmitterCom emitter)
+            {
+                if (MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.DisableButtonHighlightHaptics)))
+                {
+                    __result = true;
+                    return false;
+                }
+                else return true;
+            }
+
+        }
+        */
     }
 }

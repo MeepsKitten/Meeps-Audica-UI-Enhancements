@@ -103,9 +103,29 @@ namespace src.Utilities {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] timedisplayoverlay {
+            get {
+                object obj = ResourceManager.GetObject("timedisplayoverlay", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] timeui {
             get {
                 object obj = ResourceManager.GetObject("timeui", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] watch {
+            get {
+                object obj = ResourceManager.GetObject("watch", resourceCulture);
                 return ((byte[])(obj));
             }
         }

@@ -130,7 +130,13 @@
   <data name="quickdiffbuttons" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\QuickDifficultySelect\quickdiffbuttons;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="timedisplayoverlay" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\songtimeui\timedisplayoverlay;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="timeui" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\songtimeui\timeui;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="watch" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\watch\watch;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
