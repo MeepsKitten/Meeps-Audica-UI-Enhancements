@@ -128,7 +128,7 @@ namespace AudicaModding.MeepsUIEnhancements.AlbumArt
             {
                 if (albumArtData.Length <= 0)
                 {
-                    MelonLogger.Warning("cover art data empty");
+                    MelonLogger.Warning("Cover art data corrupt");
                     return null;
                 }
 
