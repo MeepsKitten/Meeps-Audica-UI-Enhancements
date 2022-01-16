@@ -58,13 +58,17 @@ namespace AudicaModding.MeepsUIEnhancements
         {
             private static void Postfix(PracticeMode __instance)
             {
-                if (MelonPreferences.GetEntryValue<bool>("U.I. Enhancements", nameof(Config.Config.PracticeModeMinimizationButton)))
+                if (MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.PracticeModeMinimizationButton)))
                 {
                     PracticeModeUI = __instance.gameObject.transform.GetChild(0).gameObject;
                     InitButton();
                     obj_instance.transform.SetParent(__instance.gameObject.transform);
                     obj_instance.transform.localPosition = new Vector3(0.8f, 6.335f, 1.16f);
                     obj_instance.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                }
+                else
+                {
+                    MeepsLogger.Msg("minimize button not enabled");
                 }
             }
         }

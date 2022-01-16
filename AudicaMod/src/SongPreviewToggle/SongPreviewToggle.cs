@@ -14,7 +14,7 @@ namespace AudicaModding.MeepsUIEnhancements
         {
             private static void Postfix(ref bool __result, GunButton __instance)
             {
-                if (MelonPreferences.GetEntryValue<bool>("U.I. Enhancements", nameof(Config.Config.SongPreviewToggle)))
+                if (MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.SongPreviewToggle)))
                 {
                     PreviewButtonDataStorer buttstore = __instance.gameObject.GetComponentInChildren<PreviewButtonDataStorer>();
                     if (buttstore)
@@ -36,7 +36,7 @@ namespace AudicaModding.MeepsUIEnhancements
         {
             private static void Prefix(SongSelectItem __instance)
             {
-                if (MelonPreferences.GetEntryValue<bool>("U.I. Enhancements", nameof(Config.Config.SongPreviewToggle)))
+                if (MelonPreferences.GetEntryValue<bool>(Config.Config.CATegory, nameof(Config.Config.SongPreviewToggle)))
                 {
                     PreviewButtonDataStorer comp = __instance.songPreview.GetComponent<PreviewButtonDataStorer>();
 
